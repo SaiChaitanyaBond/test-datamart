@@ -1,7 +1,7 @@
 from pyspark.sql import SparkSession
 import yaml
 import os.path
-import utils.aws_utils as ut
+from com.utility import *
 
 if __name__ == '__main__':
 
@@ -26,31 +26,41 @@ if __name__ == '__main__':
     secret = open(app_secrets_path)
     app_secret = yaml.load(secret, Loader=yaml.FullLoader)
 
-    jdbc_params = {"url": ut.get_mysql_jdbc_url(app_secret),
-                  "lowerBound": "1",
-                  "upperBound": "100",
-                  "dbtable": app_conf["mysql_conf"]["dbtable"],
-                  "numPartitions": "2",
-                  "partitionColumn": app_conf["mysql_conf"]["partition_column"],
-                  "user": app_secret["mysql_conf"]["username"],
-                  "password": app_secret["mysql_conf"]["password"]
-                   }
-    # print(jdbcParams)
+    staging_loc = app_conf['staging_loc']
 
-    # use the ** operator/un-packer to treat a python dictionary as **kwargs
-    print("\nReading data from MySQL DB using SparkSession.read.format(),")
-    txnDF = spark\
-        .read.format("jdbc")\
-        .option("driver", "com.mysql.cj.jdbc.Driver")\
-        .options(**jdbc_params)\
-        .load()
+    src_list = app_conf['src_list']
 
-    txnDF.show()
+    for src in src_list:
+        src_conf = app_conf[src]
 
-    txnDF \
-        .write \
-        .partitionBy("Location_External_Reference") \
-        .mode("overwrite") \
-        .parquet("s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/txn_sync")
+        if src == 'SB':
+            reciept_df = read_from_mysql(spark, src_conf['mysql_conf'], app_secret['mysql_conf'])
+            reciept_df = reciept_df.withColumn('ins_date', current_date())
+
+            reciept_df.show()
+
+            reciept_df \
+                .write \
+                .partitionBy("ins_date") \
+                .mode("overwrite") \
+                .parquet("s3a://" + app_conf["s3_conf"]["s3_bucket"] + '/' + staging_loc + "/" + src)
+
+        elif src == 'OL':
+            reciept_df = read_from_sftp(spark, src_conf['sftp_conf'], app_secret['sftp_conf'])
+            reciept_df = reciept_df.withColumn('ins_date', current_date())
+
+            reciept_df.show()
+
+            reciept_df \
+                .write \
+                .partitionBy("ins_date") \
+                .mode("overwrite") \
+                .parquet("s3a://" + app_conf["s3_conf"]["s3_bucket"] + '/' + staging_loc + "/" + src)
+
+        elif src == 'CP':
+            print()
+
+        elif src == 'OL':
+            print()
 
 # spark-submit --packages "mysql:mysql-connector-java:8.0.15" dataframe/ingestion/others/systems/mysql_df.py
