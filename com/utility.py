@@ -8,8 +8,8 @@ def read_from_mysql(spark, conf, secrets):
                    "dbtable": conf["dbtable"],
                    "numPartitions": "2",
                    "partitionColumn": ["partition_column"],
-                   "user": secrets["mysql_conf"]["username"],
-                   "password": secrets["mysql_conf"]["password"]
+                   "user": secrets["username"],
+                   "password": secrets["password"]
                    }
 
     df = spark \
