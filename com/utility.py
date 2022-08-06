@@ -35,6 +35,15 @@ def read_from_sftp(spark, conf, secrets):
 
     return df
 
+def read_from_mongodb(spark, conf):
+    address_df = spark \
+        .read \
+        .format("com.mongodb.spark.sql.DefaultSource") \
+        .option("database", conf["mongodb_config"]["database"]) \
+        .option("collection", conf["mongodb_config"]["collection"]) \
+        .load()
+    return address_df
+
 def get_mysql_jdbc_url(mysql_config: dict):
     host = mysql_config["mysql_conf"]["hostname"]
     port = mysql_config["mysql_conf"]["port"]

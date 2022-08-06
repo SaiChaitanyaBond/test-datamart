@@ -1,9 +1,5 @@
 src_list:
   - SB
-  - OL
-  - CP
-  - ADDR
-
 
 staging_loc: staging
 
@@ -13,19 +9,22 @@ SB:
     partition_column: App_Transaction_Id
     query : "(select * from testdb.TRANSACTIONSYNC where Internal_Member_Id = 'PC7135361') as t"
 
-s3_conf:
-  s3_bucket: hareesh-bigdata
-
 OL:
   sftp_conf:
       filetype: csv
       delimiter: |
       directory: /home/ubuntu/data
 
+CP:
+  file_path: KC_Extract_1_20171009.csv
 
-mongodb_config:
-  database: school
-  collection: students
+ADDR:
+  mongodb_config:
+    database: customers
+    collection: address
+
+s3_conf:
+  s3_bucket: hareesh-bigdata
 
 redshift_conf:
   filetype: csv
@@ -33,26 +32,3 @@ redshift_conf:
   dbtable: PUBLIC.TXN_FCT
   query: SELECT txn_id, create_time, amount, cust_id from PUBLIC.TXN_FCT
 
-spark_sql_demo:
-  agg_demo: >
-    select
-        AccountNumber,
-        UniqueTransactionDescriptions,
-        sort_array(UniqueTransactionDescriptions, false) as OrderedUniqueTransactionDescriptions,
-        size(UniqueTransactionDescriptions) as CountOfUniqueTransactionTypes,
-        array_contains(UniqueTransactionDescriptions, 'Movies') as WentToMovies
-    from
-        agg_finances
-
-
-  case_when_demo: >
-    select
-        company,
-        employee.firstName as firstName,
-        case
-            when company = 'FamilyCo' then 'Premium'
-            when company = 'OldCo' then 'Legacy'
-            else 'Standard'
-        end as Tier
-    from
-        employees
