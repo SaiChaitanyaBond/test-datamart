@@ -7,7 +7,7 @@ def read_from_mysql(spark, conf, secrets):
                    "upperBound": "100",
                    "dbtable": conf["dbtable"],
                    "numPartitions": "2",
-                   "partitionColumn": ["partition_column"],
+                   "partitionColumn": conf["partition_column"],
                    "user": secrets["username"],
                    "password": secrets["password"]
                    }
