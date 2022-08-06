@@ -31,7 +31,7 @@ def read_from_sftp(spark, conf, secrets):
         .option("pem", os.path.abspath(current_dir + "/../" + secrets["pem"])) \
         .option("fileType", "csv") \
         .option("delimiter", "|") \
-        .load(conf["directory"] + "/receipts_delta_GBR_14_10_2017.csv")
+        .load(conf["directory"] + '/receipts_delta_GBR_14_10_2017.csv')
 
     return df
 
@@ -44,7 +44,7 @@ def read_from_mongodb(spark, conf):
         .load()
     return address_df
 
-def get_mysql_jdbc_url(mysql_config: dict):
+def get_mysql_jdbc_url(mysql_config):
     host = mysql_config["hostname"]
     port = mysql_config["port"]
     database = mysql_config["database"]
