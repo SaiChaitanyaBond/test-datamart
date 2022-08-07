@@ -77,7 +77,7 @@ if __name__ == '__main__':
                 .format("csv") \
                 .load("s3a://" + app_conf["s3_conf"]["s3_bucket"] + "/KC_Extract_1_20171009.csv")
             cp_df = cp_df.withColumn('ins_date', current_date())
-
+            cp_df.show()
             cp_df \
                 .write \
                 .partitionBy("ins_date") \
