@@ -59,7 +59,7 @@ if __name__ == '__main__':
                 .parquet("s3a://" + app_conf["s3_conf"]["s3_bucket"] + '/' + staging_loc + "/" + src)
 
         elif src == 'ADDR':
-            address_df = read_from_mongodb(spark, src_conf)
+            address_df = read_from_mongodb(spark, src_conf['mongodb_config'])
             address_df = address_df.withColumn('ins_date', current_date())
 
             address_df.show()
