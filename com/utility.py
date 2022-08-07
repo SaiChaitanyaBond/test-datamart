@@ -39,8 +39,8 @@ def read_from_mongodb(spark, conf):
     address_df = spark \
         .read \
         .format("com.mongodb.spark.sql.DefaultSource") \
-        .option("database", conf["mongodb_config"]["database"]) \
-        .option("collection", conf["mongodb_config"]["collection"]) \
+        .option("database", conf["database"]) \
+        .option("collection", conf["collection"]) \
         .load()
     return address_df
 
