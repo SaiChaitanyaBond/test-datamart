@@ -19,7 +19,6 @@ CP:
   file_path: KC_Extract_1_20171009.csv
 
 ADDR:
-  mongodb_config: ec2-54-194-155-61.eu-west-1.compute.amazonaws.com
     database: customers
     collection: address
 
