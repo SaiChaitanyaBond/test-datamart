@@ -24,7 +24,7 @@ ADDR:
       collection: address
 
 s3_conf:
-  s3_bucket: hareesh-bigdata
+  s3_bucket: chaitanya-bigdata
 
 redshift_conf:
   filetype: csv
